@@ -114,6 +114,15 @@
   .dd-cell-bar .dd-bar { flex: 1; height: 6px; margin: 0; }
   .dd-cell-bar span { font-size: var(--cds-font-size-caption); color: var(--dd-muted); min-width: 3.2rem; text-align: right; }
   .dd-foot { font-size: var(--cds-font-size-caption); color: var(--dd-muted); }
+  .dd-who { display: flex; align-items: center; gap: var(--cds-gap-md); margin-top: var(--cds-gap-xs); min-width: 0; }
+  .dd-who > div { min-width: 0; }
+  .dd-who .dd-name { margin-top: 0; }
+  .dd-av { flex: none; width: 2.1rem; height: 2.1rem; border-radius: 50%; background: var(--dd-panel-2); border: 1px solid var(--dd-line); display: inline-grid; place-items: center; overflow: hidden; font-weight: 700; font-size: 12px; color: var(--dd-teal); }
+  .dd-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .dd-av-lg { width: 4.5rem; height: 4.5rem; font-size: 20px; border-width: 2px; border-color: var(--dd-teal); }
+  .dd-c1 .dd-av-lg { border-color: var(--dd-orange); }
+  .dd-namecell { display: flex; align-items: center; gap: var(--cds-gap-sm); min-width: 0; }
+  .dd-lead-av { display: inline-grid; vertical-align: middle; margin-right: 6px; }
   @media (max-width: 980px) {
     .dd-grid { grid-template-columns: minmax(0, 1fr); }
     .dd-center { order: -1; }
@@ -173,24 +182,30 @@
   <section class="dd-podio" id="podio">
     <div class="dd-card dd-c1">
       <p class="dd-pos"><span>1</span>Lugar agora</p>
-      <p class="dd-name" data-draw="val" data-source="ranking" data-field="nome" data-where="posicao=1">—</p>
-      <p class="dd-handle" data-draw="val" data-source="ranking" data-field="handle" data-where="posicao=1" data-fmt="handle">—</p>
+      <div class="dd-who"><span class="dd-av dd-av-lg" data-draw="foto" data-source="ranking" data-where="posicao=1"></span><div>
+        <p class="dd-name" data-draw="val" data-source="ranking" data-field="nome" data-where="posicao=1">—</p>
+        <p class="dd-handle" data-draw="val" data-source="ranking" data-field="handle" data-where="posicao=1" data-fmt="handle">—</p>
+      </div></div>
       <p class="dd-gmv" data-draw="val" data-source="ranking" data-field="gmv" data-where="posicao=1" data-fmt="brl">—</p>
       <div class="dd-bar"><i data-draw="barra" data-source="progresso" data-field="pct_meta" data-where="posicao=1"></i></div>
       <p class="dd-falta">Faltam <b data-draw="val" data-source="progresso" data-field="falta" data-where="posicao=1" data-fmt="brl">—</b> para a meta</p>
     </div>
     <div class="dd-card">
       <p class="dd-pos"><span>2</span>Lugar agora</p>
-      <p class="dd-name" data-draw="val" data-source="ranking" data-field="nome" data-where="posicao=2">—</p>
-      <p class="dd-handle" data-draw="val" data-source="ranking" data-field="handle" data-where="posicao=2" data-fmt="handle">—</p>
+      <div class="dd-who"><span class="dd-av dd-av-lg" data-draw="foto" data-source="ranking" data-where="posicao=2"></span><div>
+        <p class="dd-name" data-draw="val" data-source="ranking" data-field="nome" data-where="posicao=2">—</p>
+        <p class="dd-handle" data-draw="val" data-source="ranking" data-field="handle" data-where="posicao=2" data-fmt="handle">—</p>
+      </div></div>
       <p class="dd-gmv" data-draw="val" data-source="ranking" data-field="gmv" data-where="posicao=2" data-fmt="brl">—</p>
       <div class="dd-bar"><i data-draw="barra" data-source="progresso" data-field="pct_meta" data-where="posicao=2"></i></div>
       <p class="dd-falta">Faltam <b data-draw="val" data-source="progresso" data-field="falta" data-where="posicao=2" data-fmt="brl">—</b> para a meta</p>
     </div>
     <div class="dd-card">
       <p class="dd-pos"><span>3</span>Lugar agora</p>
-      <p class="dd-name" data-draw="val" data-source="ranking" data-field="nome" data-where="posicao=3">—</p>
-      <p class="dd-handle" data-draw="val" data-source="ranking" data-field="handle" data-where="posicao=3" data-fmt="handle">—</p>
+      <div class="dd-who"><span class="dd-av dd-av-lg" data-draw="foto" data-source="ranking" data-where="posicao=3"></span><div>
+        <p class="dd-name" data-draw="val" data-source="ranking" data-field="nome" data-where="posicao=3">—</p>
+        <p class="dd-handle" data-draw="val" data-source="ranking" data-field="handle" data-where="posicao=3" data-fmt="handle">—</p>
+      </div></div>
       <p class="dd-gmv" data-draw="val" data-source="ranking" data-field="gmv" data-where="posicao=3" data-fmt="brl">—</p>
       <div class="dd-bar"><i data-draw="barra" data-source="progresso" data-field="pct_meta" data-where="posicao=3"></i></div>
       <p class="dd-falta">Faltam <b data-draw="val" data-source="progresso" data-field="falta" data-where="posicao=3" data-fmt="brl">—</b> para a meta</p>
@@ -292,6 +307,21 @@
   dash.draw('restam', (el) => { el.textContent = String(DIAS - diaAtual()); });
   dash.draw('tempo', (el) => { el.style.width = (diaAtual() / DIAS * 100) + '%'; });
 
+  window.ddAv = (el, row) => {
+    if (!row) { el.replaceChildren(); el.dataset.src = ''; return; }
+    const src = row.foto || '';
+    if (el.dataset.src === src && el.childNodes.length) return;
+    el.dataset.src = src;
+    const ini = String(row.nome || row.handle || '').trim().split(/\s+/).map((w) => w[0] || '').join('').slice(0, 2).toUpperCase();
+    el.replaceChildren();
+    if (!src) { el.textContent = ini; return; }
+    const im = document.createElement('img');
+    im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.referrerPolicy = 'no-referrer';
+    im.onerror = () => { el.replaceChildren(); el.textContent = ini; };
+    im.src = src; el.appendChild(im);
+  };
+  dash.draw('foto', (el) => window.ddAv(el, window.ddRow(el)));
+
   dash.draw('tabela', (tbody) => {
     const r = dash.data('ranking');
     const p = dash.data('progresso');
@@ -322,7 +352,7 @@
       barCell.appendChild(wrap);
       tr.append(
         td(String(x.posicao), 'dd-pos-cell'),
-        td(String(x.nome)),
+        (() => { const c = document.createElement('td'); const w = document.createElement('div'); w.className = 'dd-namecell'; const av = document.createElement('span'); av.className = 'dd-av'; window.ddAv(av, x); const nm = document.createElement('span'); nm.textContent = String(x.nome); w.append(av, nm); c.appendChild(w); return c; })(),
         td('@' + x.handle, 'dd-handle-cell dd-hide-narrow'),
         td(window.ddFmt('brl', x.gmv), 'dd-num'),
         td(window.ddFmt('int', x.pedidos), 'dd-num dd-hide-narrow'),
