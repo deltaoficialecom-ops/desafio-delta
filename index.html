@@ -123,6 +123,11 @@
   .dd-c1 .dd-av-lg { border-color: var(--dd-orange); }
   .dd-namecell { display: flex; align-items: center; gap: var(--cds-gap-sm); min-width: 0; }
   .dd-lead-av { display: inline-grid; vertical-align: middle; margin-right: 6px; }
+  .dd-coroa-wrap { position: relative; display: inline-flex; flex: none; }
+  .dd-coroa { position: absolute; left: 50%; top: 0; width: 64%; height: auto; transform: translate(-50%, -66%) rotate(-10deg); filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .4)); pointer-events: none; z-index: 1; }
+  .dd-podio .dd-who { margin-top: 1.25rem; }
+  .dd-av-lg + .dd-coroa, .dd-coroa-wrap .dd-coroa:has(+ .dd-av-lg) { width: 74%; }
+  .dd-table tr:first-child .dd-namecell { padding-top: 6px; }
   @media (max-width: 980px) {
     .dd-grid { grid-template-columns: minmax(0, 1fr); }
     .dd-center { order: -1; }
@@ -182,7 +187,7 @@
   <section class="dd-podio" id="podio">
     <div class="dd-card dd-c1">
       <p class="dd-pos"><span>1</span>Lugar agora</p>
-      <div class="dd-who"><span class="dd-av dd-av-lg" data-draw="foto" data-source="ranking" data-where="posicao=1"></span><div>
+      <div class="dd-who"><span class="dd-coroa-wrap"><svg class="dd-coroa" viewBox="0 0 64 46" aria-hidden="true"><path d="M7 15 L19 27 L32 8 L45 27 L57 15 L53 37 H11 Z" fill="#FFC83D" stroke="#A86B12" stroke-width="2.5" stroke-linejoin="round"/><rect x="11" y="37" width="42" height="6" rx="2" fill="#F5A623" stroke="#A86B12" stroke-width="2"/><circle cx="7" cy="13" r="4" fill="#FFC83D" stroke="#A86B12" stroke-width="2"/><circle cx="32" cy="6" r="4" fill="#FFC83D" stroke="#A86B12" stroke-width="2"/><circle cx="57" cy="13" r="4" fill="#FFC83D" stroke="#A86B12" stroke-width="2"/><circle cx="32" cy="29" r="3" fill="#FF6B57"/></svg><span class="dd-av dd-av-lg" data-draw="foto" data-source="ranking" data-where="posicao=1"></span></span><div>
         <p class="dd-name" data-draw="val" data-source="ranking" data-field="nome" data-where="posicao=1">—</p>
         <p class="dd-handle" data-draw="val" data-source="ranking" data-field="handle" data-where="posicao=1" data-fmt="handle">—</p>
       </div></div>
@@ -307,6 +312,7 @@
   dash.draw('restam', (el) => { el.textContent = String(DIAS - diaAtual()); });
   dash.draw('tempo', (el) => { el.style.width = (diaAtual() / DIAS * 100) + '%'; });
 
+  window.DD_COROA = '<svg class="dd-coroa" viewBox="0 0 64 46" aria-hidden="true"><path d="M7 15 L19 27 L32 8 L45 27 L57 15 L53 37 H11 Z" fill="#FFC83D" stroke="#A86B12" stroke-width="2.5" stroke-linejoin="round"/><rect x="11" y="37" width="42" height="6" rx="2" fill="#F5A623" stroke="#A86B12" stroke-width="2"/><circle cx="7" cy="13" r="4" fill="#FFC83D" stroke="#A86B12" stroke-width="2"/><circle cx="32" cy="6" r="4" fill="#FFC83D" stroke="#A86B12" stroke-width="2"/><circle cx="57" cy="13" r="4" fill="#FFC83D" stroke="#A86B12" stroke-width="2"/><circle cx="32" cy="29" r="3" fill="#FF6B57"/></svg>';
   window.ddAv = (el, row) => {
     if (!row) { el.replaceChildren(); el.dataset.src = ''; return; }
     const src = row.foto || '';
@@ -352,7 +358,7 @@
       barCell.appendChild(wrap);
       tr.append(
         td(String(x.posicao), 'dd-pos-cell'),
-        (() => { const c = document.createElement('td'); const w = document.createElement('div'); w.className = 'dd-namecell'; const av = document.createElement('span'); av.className = 'dd-av'; window.ddAv(av, x); const nm = document.createElement('span'); nm.textContent = String(x.nome); w.append(av, nm); c.appendChild(w); return c; })(),
+        (() => { const c = document.createElement('td'); const w = document.createElement('div'); w.className = 'dd-namecell'; const av = document.createElement('span'); av.className = 'dd-av'; window.ddAv(av, x); const nm = document.createElement('span'); nm.textContent = String(x.nome); if (Number(x.posicao) === 1) { const cw = document.createElement('span'); cw.className = 'dd-coroa-wrap'; cw.innerHTML = window.DD_COROA; cw.appendChild(av); w.append(cw, nm); } else w.append(av, nm); c.appendChild(w); return c; })(),
         td('@' + x.handle, 'dd-handle-cell dd-hide-narrow'),
         td(window.ddFmt('brl', x.gmv), 'dd-num'),
         td(window.ddFmt('int', x.pedidos), 'dd-num dd-hide-narrow'),
